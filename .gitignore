@@ -1,2 +1,9 @@
-/papers
+/data
+/logs
+/media
 *.drawio*
+__pycache__
+
+# Ignore every files that are not .ipynb in folder /notebooks
+/notebooks/*
+!/notebooks/**/*.ipynb
