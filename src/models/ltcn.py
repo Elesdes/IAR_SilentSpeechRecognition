@@ -154,8 +154,7 @@ class LTCCell(nn.Module):
         )
         self.erev = nn.Parameter(erev_init.float() * self.erev_init_factor)
 
-        # 4) Leak parameters
-
+        # Leak parameters
         if self.fix_vleak is None:
             self.vleak = nn.Parameter(torch.rand(self.num_units).uniform_(-0.2, 0.2))
         else:
@@ -367,3 +366,50 @@ class LTCCell(nn.Module):
 
             self.W.clamp_(min=self.w_min_value, max=self.w_max_value)
             self.sensory_W.clamp_(min=self.w_min_value, max=self.w_max_value)
+
+
+class LTCModel(nn.Module):
+    """
+    Multi-step LTCModel that unrolls the LTCCell over the input sequence
+    and returns an output at every timestep, matching the target's seq_len.
+    """
+
+    def __init__(
+        self,
+        input_size: int,
+        hidden_size: int,
+        output_size: int,
+        ltc_cell_kwargs: dict = None,
+    ):
+        super().__init__()
+        self.hidden_size = hidden_size
+        self.ltc_cell = LTCCell(
+            num_units=hidden_size, input_size=input_size, **(ltc_cell_kwargs or {})
+        )
+        # We'll apply a linear layer to each hidden state to get an output dimension
+        self.fc_out = nn.Linear(hidden_size, output_size)
+
+    def forward(self, inputs: torch.Tensor) -> torch.Tensor:
+        """
+        Args:
+            inputs: [batch_size, seq_len, input_size]
+        Returns:
+            predictions: [batch_size, seq_len, output_size]
+        """
+        batch_size, seq_len, _ = inputs.shape
+        device = inputs.device
+
+        # Hidden state initialization
+        h = torch.zeros(batch_size, self.hidden_size, device=device)
+
+        # Collect outputs at each timestep
+        outputs = []
+        for t in range(seq_len):
+            x_t = inputs[:, t, :]  # [batch_size, input_size]
+            out, h = self.ltc_cell(x_t, h)
+            # Map the hidden state to output_size
+            out_mapped = self.fc_out(out)  # [batch_size, output_size]
+            outputs.append(out_mapped.unsqueeze(1))  # insert a time dimension
+
+        # Concatenate outputs across time -> [batch_size, seq_len, output_size]
+        return torch.cat(outputs, dim=1)

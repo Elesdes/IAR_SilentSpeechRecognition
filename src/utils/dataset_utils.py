@@ -108,7 +108,6 @@ class DatasetUtils:
     def dataset_to_numpy(self, dataset: Any) -> Tuple[np.ndarray, np.ndarray]:
         """
         dataset: A PyTorch-style dataset yielding (x, y).
-        Each (x, y) = ( [50, 3], [1, 3] ) for Lorenz.
 
         We'll flatten x into shape [50*3] or just use x[-1,:] if we want
         a pure single-step approach. However, typically for an ESN with single-step,
@@ -123,14 +122,12 @@ class DatasetUtils:
         X_list = []
         y_list = []
         for x_tensor, y_tensor in dataset:
-            # x_tensor shape = (50, 3), y_tensor shape = (1, 3)
-            # We'll extract the last step of x, and the single step of y
-            x_np = x_tensor[-1].cpu().numpy()  # shape (3,)
-            y_np = y_tensor[0].cpu().numpy()  # shape (3,)
+            x_np = x_tensor[-1].cpu().numpy()
+            y_np = y_tensor[0].cpu().numpy()
 
             X_list.append(x_np)
             y_list.append(y_np)
 
-        X_arr = np.array(X_list)  # shape (n_samples, 3)
-        Y_arr = np.array(y_list)  # shape (n_samples, 3)
+        X_arr = np.array(X_list)
+        Y_arr = np.array(y_list)
         return X_arr, Y_arr

@@ -94,7 +94,7 @@ class Seq2Seq(nn.Module):
         # or a special start token. We'll use y[:, 0, :] as a start.
         dec_input = y[:, 0].unsqueeze(1)  # shape: (batch_size, 1, output_dim)
 
-        for t in range(1, y_len):
+        for t in range(0, y_len):
             # Forward through decoder one step
             pred, hidden = self.decoder(
                 dec_input, hidden

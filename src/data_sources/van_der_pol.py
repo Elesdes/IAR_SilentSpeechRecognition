@@ -173,17 +173,3 @@ class VanDerPolOscillator:
             plt.show()
 
         return fig, ax1, ax2
-
-
-if __name__ == "__main__":
-    init_state = [1.0, 0.0]  # x0=1, v0=0
-
-    # Free Van der Pol oscillator example
-    vdp_free = VanDerPolOscillator(omega_0=1.0, epsilon=0.2, forcing_amplitude=0.0)
-    vdp_free.plot_trajectory(initial_state=init_state, t_span=(0, 50))
-
-    # Forced Van der Pol oscillator example
-    vdp_forced = VanDerPolOscillator(
-        omega_0=1.0, epsilon=0.2, forcing_amplitude=0.5, forcing_freq=1.2
-    )
-    vdp_forced.plot_trajectory(initial_state=init_state, t_span=(0, 50))

@@ -1,4 +1,4 @@
-from typing import Any, List, Tuple
+from typing import List, Tuple
 import numpy as np
 from scipy.integrate import solve_ivp
 import matplotlib.pyplot as plt
@@ -170,9 +170,7 @@ class LorenzOscillator:
         ax.set_ylabel("y")
         ax.set_zlabel("z")
         ax.set_title(
-            "Lorenz Attractor (sigma={}, rho={}, beta={})".format(
-                self.sigma, self.rho, self.beta
-            )
+            f"Lorenz Attractor (sigma={self.sigma}, rho={self.rho}, beta={self.beta})"
         )
         if show:
             plt.show()

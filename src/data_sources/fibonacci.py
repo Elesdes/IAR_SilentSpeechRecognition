@@ -101,15 +101,3 @@ class FibonacciOscillator:
             plt.show()
 
         return fig, ax
-
-
-if __name__ == "__main__":
-    # Create a Fibonacci oscillator with specific q1, q2
-    fib_osc = FibonacciOscillator(q1=1.05, q2=0.95)
-
-    # Print a few values of the generalized Fibonacci 'number operator'
-    for n in range(6):
-        print(f"[{n}] = {fib_osc.number_operator(n):.5f}")
-
-    # Plot the discrete energy spectrum from n = 0 to n = 10
-    fib_osc.plot_energy_levels(n_min=0, n_max=10)
